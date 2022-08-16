@@ -1,0 +1,41 @@
+language: pt
+pipeline:
+- case_sensitive: false
+  model: pt_core_news_lg
+  name: SpacyNLP
+- name: SpacyTokenizer
+- name: SpacyFeaturizer
+- name: RegexFeaturizer
+- name: LexicalSyntacticFeaturizer
+- name: CountVectorsFeaturizer
+  strip_accents: unicode
+  OOV_token: oov
+  token_pattern: (?u)\b\w+\b
+- analyzer: char_wb
+  max_ngram: 5
+  min_ngram: 1
+  name: CountVectorsFeaturizer
+  strip_accents: unicode
+- name: DIETClassifier
+- name: DucklingHTTPExtractor
+  url: http://localhost:8000
+  dimensions:
+  - email
+- name: EntitySynonymMapper
+- name: ResponseSelector
+  retrieval_intent: out_of_scope
+  scale_loss: false
+policies:
+- max_history: 5
+  name: MemoizationPolicy
+- batch_size:
+  - 32
+  - 64
+  epochs: 100
+  max_history: 5
+  name: TEDPolicy
+- name: MappingPolicy
+- core_threshold: 0.5
+  fallback_action_name: utter_fallback
+  name: FallbackPolicy
+  nlu_threshold: 0.65

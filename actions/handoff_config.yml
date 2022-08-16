@@ -1,0 +1,14 @@
+handoff_hosts:
+    financial_demo:
+      title: "Financial Assistant"
+      url: "http://localhost:5006"
+    julia:
+      title: "Julia"
+      url: "14161958-e8b2-11ea-adc1-0242ac120002"
+    beto:
+      title: "Beto"
+      url: "2d074b08-e8b2-11ea-adc1-0242ac120002"                  
+    ## you can add more handoff hosts to this list e.g.
+    # moodbot:
+    #   title: "MoodBot"
+    #   url: "http://localhost:5007"

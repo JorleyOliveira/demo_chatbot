@@ -1,0 +1,12 @@
+# tracker_store:
+ # store_type: tracker.tracker_store.ElasticTrackerStore
+ # url: http://localhost:9200
+action_endpoint:
+  url: http://action:5055/webhook
+nlg:
+  url: http://nlg:5056/nlg
+lock_store:
+    type: "redis"
+    url: redis
+    port: 6379
+    db: 0

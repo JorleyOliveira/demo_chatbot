@@ -1,0 +1,156 @@
+version: '3'
+services:
+    elasticsearch:
+        image: 'docker.elastic.co/elasticsearch/elasticsearch:7.3.0'
+        container_name: elasticsearch
+        environment:
+            - cluster.name=docker-cluster
+            - bootstrap.memory_lock=true
+            - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+            - http.cors.enabled=true
+            - 'http.cors.allow-origin=*'
+            - discovery.zen.minimum_master_nodes=1
+        ulimits:
+            memlock: {soft: -1, hard: -1}
+        volumes:
+            - 'esdata1:/usr/share/elasticsearch/data'
+        ports:
+            - '9200:9200'
+        networks:
+            - esnet
+    elasticsearch2:
+        image: 'docker.elastic.co/elasticsearch/elasticsearch:7.3.0'
+        container_name: elasticsearch2
+        environment:
+            - cluster.name=docker-cluster
+            - bootstrap.memory_lock=true
+            - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+            - discovery.zen.ping.unicast.hosts=elasticsearch
+            - http.cors.enabled=true
+            - 'http.cors.allow-origin=*'
+            - discovery.zen.minimum_master_nodes=1
+        ulimits:
+            memlock: {soft: -1, hard: -1}
+        volumes:
+            - 'esdata2:/usr/share/elasticsearch/data'
+        networks:
+            - esnet
+    elasticsearch3:
+        image: 'docker.elastic.co/elasticsearch/elasticsearch:7.3.0'
+        container_name: elasticsearch3
+        environment:
+            - cluster.name=docker-cluster
+            - bootstrap.memory_lock=true
+            - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+            - discovery.zen.ping.unicast.hosts=elasticsearch
+            - http.cors.enabled=true
+            - 'http.cors.allow-origin=*'
+            - discovery.zen.minimum_master_nodes=2
+        ulimits:
+            memlock: {soft: -1, hard: -1}
+        volumes:
+            - 'esdata3:/usr/share/elasticsearch/data'
+        networks:
+            - esnet
+    kibana:
+        image: 'docker.elastic.co/kibana/kibana:7.3.0'
+        container_name: kibana
+        environment:
+            SERVER_NAME: kibana.local
+            ELASTICSEARCH_URL: 'http://elasticsearch:9200'
+        ports:
+            - '5601:5601'
+        networks:
+            - esnet
+    headPlugin:
+        image: 'mobz/elasticsearch-head:5'
+        container_name: head
+        ports:
+            - '9100:9100'
+        networks:
+            - esnet
+    rasa:
+        build:
+            context: .
+            dockerfile: ./docker/bot/Dockerfile
+        environment:
+            TF_FORCE_GPU_ALLOW_GROWTH: "true"
+        ports:
+          - 5005-5007:5005
+        volumes:
+          - ./app:/app
+          - /tmp/rasa:/tmp/rasa
+        entrypoint: python
+        command: -m rasa run --enable --debug -m app/models/result.tar.gz --log-file /tmp/rasa/bot.log -t token --endpoints app/endpoints.yml --port 5005 --credentials app/credentials.yml --cors "*"
+        depends_on:
+          - nlg
+          - action
+          - redis
+          - duckling
+    nlg:
+        build:
+            context: .
+            dockerfile: ./docker/nlg/Dockerfile
+        container_name: nlg
+        ports:
+          - 5056:5056
+        volumes:
+          - ./app:/app
+          - ./nlg:/nlg
+          - /tmp/nlg:/tmp/nlg
+        entrypoint: python
+        command: nlg/nlg_server.py --port 5056 --domain app/domain.yml
+    action:
+        build:
+            context: .
+            dockerfile: ./docker/actions/Dockerfile
+        container_name: action
+        volumes:
+          - ./actions:/app/actions
+        expose: 
+            - 5055            
+    redis:
+        image: 'docker.io/bitnami/redis:6.0-debian-10'
+        container_name: redis
+        environment:
+          # ALLOW_EMPTY_PASSWORD is recommended only for development.
+          - ALLOW_EMPTY_PASSWORD=yes
+          - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+        ports:
+          - '6379:6379'
+        volumes:
+          - 'redis_data:/bitnami/redis/data'
+    chatroom:
+        image: chatroom
+        container_name: chatroom
+        build:
+          context: .
+          dockerfile: ./docker/chatroom/Dockerfile
+        ports:
+          - "8080:8080"
+        command: [ "yarn", "serve" ]
+    chatserver:
+        image: chatserver
+        container_name: chatserver
+        build:
+          context: .
+          dockerfile: ./docker/server-socket-io/Dockerfile
+        ports:
+          - "4001:4001"
+        command: [ "npm", "start" ]
+    duckling:
+        image: rasa/duckling
+        ports:
+          - "8000:8000"
+volumes:
+    esdata1:
+        driver: local
+    esdata2:
+        driver: local
+    esdata3:
+        driver: local
+    redis_data:
+        driver: local        
+networks:
+    esnet:
+

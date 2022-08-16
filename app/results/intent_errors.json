@@ -1,0 +1,10 @@
+[
+  {
+    "text": "sim, eu preciso encontrar",
+    "intent": "affirm",
+    "intent_prediction": {
+      "name": "consultar_saldo_da_conta",
+      "confidence": 0.47721678018569946
+    }
+  }
+]

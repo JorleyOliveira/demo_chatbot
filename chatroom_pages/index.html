@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="./dist/Chatroom.css">
+    <link rel="stylesheet" type="text/css" href="./index.css">
+    <title>Chatroom</title>
+  </head>
+  <body>
+    <div class="chat-container"></div>
+    <script src="./dist/Chatroom.js"></script>
+    <script type="text/javascript">
+window.chatroom = new window.Chatroom({
+  title: "Serasa",
+  container: document.querySelector(".chat-container"),
+  welcomeMessage: "Olá! Como eu posso te ajudar?",
+  host: "http://localhost:5005",
+  isClientExternal: true,
+  endpoint: "http://127.0.0.1:4001",
+  idAttendant: null,
+  speechRecognition: "pt-BR",
+  // voiceLang: "pt-BR"
+});
+window.chatroom.openChat();
+</script>
+  </body>
+</html>

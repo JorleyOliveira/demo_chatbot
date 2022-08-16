@@ -1,0 +1,179 @@
+intents:
+  - affirm
+  - negar
+  - request_info
+  - usuario_deseja_alterar_endereco_de_entrega
+  - informar
+  - emprestimo
+  - human_handoff
+  - consultar_saldo_da_conta
+  - greet
+  - trigger_handoff
+  - obrigado
+  - handoff:
+      triggers: utter_greet
+  - out_of_scope:
+      triggers: respond_out_of_scope
+      use_entities: []
+entities:
+  - cozinha
+  - pessoas
+  - preco
+  - informacoes
+  - localizacao
+  - UF
+  - cep
+  - conta
+  - email
+  - handoff_to
+slots:
+  preco:
+    type: text
+  informacoes:
+    type: text
+  cozinha:
+    type: text
+  pessoas:
+    type: text
+  localizacao:
+    type: text
+  cep:
+    type: text
+  email:
+    type: text
+  UF:
+    type: categorical
+    values:
+      - GO
+      - MG
+      - BA
+  conta:
+    type: categorical
+    values:
+      - corrente
+      - poupança
+  handoff_to:
+    type: unfeaturized
+responses:
+  utter_affirm:
+    - text: teste
+  utter_greet:
+    - text: ei lá
+  utter_informar:
+    - text: '( pessoas: 4) pessoas'
+    - text: teste
+  action_request_info:
+    - text: teste
+  utter_obrigado:
+    - text: adeus :(
+    - text: Tchau-tchau
+  utter_ack_do__search:
+    - text: ok, deixe-me ver o que posso encontrar
+  utter_ack_findalternatives:
+    - text: ok, deixe-me ver o que mais há
+  utter_ask_howcanhelp:
+    - text: como posso ajudá-lo?
+  utter_ask_location:
+    - text: onde?
+  utter_ask_moreupdates:
+    - text: 'se você quiser modificar mais alguma coisa, me diga o que é. É o que
+        eu tenho atualmente: {localização}(preço: {preço} , cozinha: {cozinha} para
+        {pessoas} pessoas.'
+  utter_ask_numpeople:
+    - text: para quantas pessoas?
+  utter_on_it:
+    - text: eu estou nele
+  utter_ask_cuisine:
+    - text: Que tipo de cozinha você gostaria?
+  utter_homenagear_mg:
+    - text: Minas reúne o mais importante acervo arquitetônico e artístico do período
+        colonial brasileiro, preservado em cidades de fama internacional como Ouro
+        Preto
+  utter_homenagear_ba:
+    - text: 'A Bahia (sigla: BA) é o estado mais populoso e extenso da região Nordeste
+        do Brasil. Sua capital é Salvador, que foi a primeira capital do Brasil.'
+  utter_homenagear_go:
+    - text: No fim do século XVII e inicio do século XVIII, expedições de Bandeirantes
+        descobriram as primeiras minas de ouro no território de Goiás.
+  utter_bot_solicita_cep_ao_usuario:
+    - text: 'Me informe o seu cep (ex: 99999999)'
+  utter_consultar_saldo_da_conta_bancaria:
+    - text: Ops, vi que você não autorizou no APP essa consulta via chat. por segurança
+        não posso informar isto ainda!
+  utter_saudacao_correntista:
+    - text: Correntista venha conhecer nossos produtos de investimentos. Faça uma
+        avaliação de perfil e conheça as melhores opções do mercado disponíveis diretamente
+        no seu app.
+  utter_saudacao_poupanca:
+    - text: Vi que sua conta poupança não está rendendo o suficiente. Venha conhecer
+        nossos produtos de renda fixa para melhorar a rentabilidade do sue dinheiro!
+  utter_solicitar_email:
+    - text: Me informe o seu email para que eu possa identificar se você possui um
+        cadastro conosco?
+  utter_ask_handoff:
+    - text: Parece que você deseja ser transferido para um agente humano.
+  utter_ask_whatelse:
+    - text: Em que mais posso ajudar?
+  utter_ack_makereservation:
+    - text: ok, fazer uma reserva para restaurante (preço = {preço} cozinha = {cozinha}
+        no local = {localização} para contagem = {pessoas}?
+      buttons:
+        - title: obrigado
+          payload: obrigado
+  utter_ask_price:
+    - text: Em que faixa de preço?
+      buttons:
+        - title: barato
+          payload: barato
+        - title: caro
+          payload: caro
+        - title: moderado
+          payload: moderado
+  utter_out_of_scope:
+    - text: Desculpe, não tenho certeza de como responder a isso.
+  utter_fallback:
+    - text: Nossa que chato! Eu não entendi, sugiro que você tente me falar o que
+        precisa de uma outra forma ou clique em "Falar com um atendente"! O humano
+        que me treina disse que estou aprendendo rápido, mas tenho que evoluir muito
+        ainda!
+      buttons:
+        - title: Falar com um atendente
+          payload: /human_handoff
+actions:
+  - utter_affirm
+  - utter_informar
+  - utter_greet
+  - utter_ack_findalternatives
+  - utter_ask_location
+  - utter_ask_moreupdates
+  - utter_ask_numpeople
+  - utter_ask_price
+  - utter_on_it
+  - utter_ask_howcanhelp
+  - action_more_updates
+  - utter_ack_do__search
+  - utter_ack_makereservation
+  - utter_obrigado
+  - action_search_restaurantes
+  - action_handoff_options
+  - action_handoff
+  - utter_fallback
+  - utter_ask_cuisine
+  - utter_homenagear_mg
+  - utter_homenagear_ba
+  - utter_homenagear_go
+  - utter_saudacao_correntista
+  - utter_saudacao_poupanca
+  - utter_consultar_saldo_da_conta_bancaria
+  - action_request_info
+  - utter_out_of_scope
+  - utter_bot_solicita_cep_ao_usuario
+  - action_consultar_cep
+  - utter_solicitar_email
+  - action_consultar_cliente
+  - utter_ask_handoff
+  - utter_ask_whatelse
+  - respond_out_of_scope
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
